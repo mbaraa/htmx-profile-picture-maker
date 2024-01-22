@@ -5,7 +5,8 @@ use yew::{classes, function_component, html, Html};
 pub fn app() -> Html {
     html! {
         <main style="min-height: 100dvh" class={classes!("bg-gray")}>
-            <DragThingy start_x={0} start_y={0} image_path=""/>
+            <DragThingy start_x={0} start_y={0} image_path="/resources/laser-right.svg"/>
+            <DragThingy start_x={300} start_y={0} image_path="/resources/laser-left.svg"/>
             {"AAAAAAAAAAAAAAAAAAAAAAAA HELP!"}
         </main>
     }

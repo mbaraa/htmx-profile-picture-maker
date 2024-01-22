@@ -21,6 +21,7 @@ pub fn drag_thingy(props: &Props) -> Html {
     let offset = use_state(|| [0, 0]);
     let is_down = use_state(|| false);
     let overlay_ref = use_node_ref();
+    let overlay_id = use_state(|| format!("overlay{}", props.image_path.clone()));
 
     {
         let div_ref = overlay_ref.clone();
@@ -89,12 +90,13 @@ pub fn drag_thingy(props: &Props) -> Html {
         let offset = offset.clone();
         let is_down = is_down.clone();
         let _document = document.clone();
+        let overlay_id = overlay_id.clone();
 
         use_effect(move || {
             let closure = Closure::<dyn FnMut(_)>::new(move |e: MouseEvent| {
                 e.prevent_default();
                 let div = _document
-                    .get_element_by_id("overlay")
+                    .get_element_by_id(overlay_id.to_owned().as_str())
                     .unwrap()
                     .dyn_into::<HtmlDivElement>()
                     .unwrap();
@@ -133,17 +135,16 @@ pub fn drag_thingy(props: &Props) -> Html {
 
     html! {
         <div
-            id="overlay"
+            id={format!("overlay{}", props.image_path.clone())}
             ref={overlay_ref}
             style={format!("
                 position: absolute;
                 top: {}px;
                 left: {}px;
-                background-color: green;
-                padding: 50px;
-                margin: 20px;
+                padding: 20px;
             ", props.start_y.clone(), props.start_x.clone())}>
-                <div class={classes!("bg-[#112233]")}>{*is_down.clone()}</div>
+                <img src={props.image_path.clone()} alt="laser image" />
+                <div class={classes!("bg-blue")}>{"drag"}</div>
         </div>
     }
 }
