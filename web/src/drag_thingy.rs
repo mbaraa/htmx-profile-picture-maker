@@ -8,6 +8,7 @@ use yew::{
 pub struct Props {
     pub start_x: u32,
     pub start_y: u32,
+    pub title: String,
     pub image_path: String,
 }
 
@@ -144,7 +145,7 @@ pub fn drag_thingy(props: &Props) -> Html {
                 padding: 20px;
             ", props.start_y.clone(), props.start_x.clone())}>
                 <img src={props.image_path.clone()} alt="laser image" />
-                <div class={classes!("bg-blue")}>{"drag"}</div>
+                <div class={classes!("bg-blue", "hover:cursor-move")}>{props.title.clone()}</div>
         </div>
     }
 }
