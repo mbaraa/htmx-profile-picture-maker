@@ -3,7 +3,9 @@ module.exports = {
   content: ["../**/*.{html,rs}"],
   theme: {
     extend: {
-      fontFamily: {},
+      fontFamily: {
+        Ubuntu: ["Ubuntu", "sans-serif"],
+      },
       colors: {
         grey: "#191B1C",
         blue: "#519AE5",
