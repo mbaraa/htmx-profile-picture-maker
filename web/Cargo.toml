@@ -24,7 +24,12 @@ gloo-net = "0.5.0"
 version = "0.3.66"
 features = [
   'CssStyleDeclaration',
+  'ClientRectsAndTexts',
   'Document',
+  'DomRect',
+  'DomRectInit',
+  'DomRectList',
+  'DomRectReadOnly',
   'Element',
   'EventTarget',
   'HtmlDivElement',
