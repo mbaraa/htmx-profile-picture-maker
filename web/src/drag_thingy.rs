@@ -145,7 +145,13 @@ pub fn drag_thingy(props: &Props) -> Html {
                 padding: 20px;
             ", props.start_y.clone(), props.start_x.clone())}>
                 <img src={props.image_path.clone()} alt="laser image" />
-                <div class={classes!("bg-blue", "hover:cursor-move")}>{props.title.clone()}</div>
+                <div class={classes!("bg-blue", "hover:cursor-move", "flex", "justify-between", "p-[5px]", "rounded-[2px]")}>
+                    <p class={classes!("text-dark-blue", "font-medium")}>{props.title.clone()}</p>
+                    <div class={classes!("flex", "gap-x-[2.5px]")}>
+                        <div class={classes!("bg-[url('/resources/cursor-move.svg')]", "bg-center", "w-[25px]", "h-[25px]")}></div>
+                        <div class={classes!("bg-[url('/resources/cursor-nwse-resize.svg')]", "bg-center", "w-[25px]", "h-[25px]", "hover:cursor-nwse-resize")}></div>
+                    </div>
+                </div>
         </div>
     }
 }
