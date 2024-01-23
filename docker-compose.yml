@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: "htmx-profile-picture-maker-db"
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: alongtimeagoinagalaxyfarfaraway
+    volumes:
+      - htmx-profile-picture-maker-db-data:/data/db
+    networks:
+      - htmx-profile-picture-maker
+
+  website:
+    container_name: "htmx-profile-picture-maker-website"
+    build:
+      dockerfile: Dockerfile
+      context: ./web/
+    image: "htmx-profile-picture-maker-website"
+    volumes:
+      - front-end-build:/opt
+    stdin_open: true
+
+  api:
+    container_name: "htmx-profile-picture-maker-api"
+    build:
+      dockerfile: Dockerfile
+      context: ./api/
+    image: "htmx-profile-picture-maker-api"
+    restart: "always"
+    volumes:
+      - front-end-build:/opt
+      - htmx-profile-picture-maker-uploads:/app/_uploads
+    depends_on:
+      - db
+      - website
+    ports:
+      - "20241:8080"
+    # env_file: ./.env.docker
+    stdin_open: true
+    networks:
+      - htmx-profile-picture-maker
+
+networks:
+  htmx-profile-picture-maker: {}
+
+volumes:
+  front-end-build: {}
+  htmx-profile-picture-maker-db-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_database/
+  htmx-profile-picture-maker-uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_uploads/
