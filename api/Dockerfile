@@ -3,16 +3,15 @@ FROM golang:1.21-alpine as build
 WORKDIR /app
 COPY . .
 
-RUN apk add make npm nodejs
-RUN make build
+RUN go build -ldflags="-w -s"
 
 FROM alpine:latest as run
 
 WORKDIR /app
 
-COPY --from=build /app/mbaraacom ./run
-COPY --from=build /app/resources ./resources
+COPY --from=build /app/hppm ./run
+# COPY --from=build /app/resources ./resources
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["./run"]
