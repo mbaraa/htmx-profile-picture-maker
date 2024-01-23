@@ -2,7 +2,8 @@ use gloo::console;
 use wasm_bindgen::{closure::Closure, JsCast, UnwrapThrowExt};
 use web_sys::{window, EventTarget, HtmlDivElement, MouseEvent};
 use yew::{
-    classes, function_component, html, use_effect, use_node_ref, use_state, Html, Properties,
+    classes, function_component, html, use_effect, use_node_ref, use_state, Callback, Html,
+    Properties,
 };
 
 #[derive(Properties, PartialEq)]
@@ -11,6 +12,7 @@ pub struct Props {
     pub start_y: u32,
     pub title: String,
     pub image_path: String,
+    pub aspect_ratio: f32,
 }
 
 #[function_component(DragThingy)]
@@ -25,10 +27,22 @@ pub fn drag_thingy(props: &Props) -> Html {
     let overlay_ref = use_node_ref();
     let overlay_id = use_state(|| format!("overlay{}", props.image_path.clone()));
 
-    let is_resize = use_state(|| false);
     let image_ref = use_node_ref();
 
-    let remove_event_listener_with_callback = {};
+    // TODO: implement this to reduce code.
+    let _remove_event_listener_with_callback = {};
+
+    let get_positions = {
+        let image_ref = image_ref.clone();
+        Callback::from(move |_| {
+            let div = image_ref
+                .clone()
+                .cast::<HtmlDivElement>()
+                .expect("something went wrong");
+            console::log!(div.get_bounding_client_rect().x());
+            console::log!(div.get_bounding_client_rect().y());
+        })
+    };
 
     // move the whole thing
     {
@@ -104,10 +118,7 @@ pub fn drag_thingy(props: &Props) -> Html {
                     .unwrap()
                     .dyn_into::<HtmlDivElement>()
                     .unwrap();
-                console::log!(e.type_());
                 if *is_move {
-                    console::log!(div.client_width());
-                    console::log!(div.client_height());
                     div.style()
                         .set_property(
                             "left",
@@ -141,50 +152,6 @@ pub fn drag_thingy(props: &Props) -> Html {
         });
     };
 
-    // resize the bloody image
-    {
-        //       let is_resize = is_resize.clone();
-        //       use_effect(move || {
-        //           let closure = Closure::<dyn FnMut(_)>::new(move |e: MouseEvent| {
-        //               is_resize.set(true);
-        //           });
-        //           document
-        //               .add_event_listener_with_callback("pointerdown", closure.as_ref().unchecked_ref())
-        //               .unwrap();
-        //
-        //           move || {
-        //               document
-        //                   .remove_event_listener_with_callback(
-        //                       "pointerdown",
-        //                       closure.as_ref().unchecked_ref(),
-        //                   )
-        //                   .unwrap();
-        //           }
-        //       });
-    };
-
-    {
-        //       let is_resize = is_move.clone();
-        //       let document = document.clone();
-        //       use_effect(move || {
-        //           let closure = Closure::<dyn FnMut(_)>::new(move |_e: MouseEvent| {
-        //               is_resize.set(false);
-        //           });
-        //           document
-        //               .add_event_listener_with_callback("pointerup", closure.as_ref().unchecked_ref())
-        //               .expect("AAAAAAAAAAAAAAAAAAA");
-        //
-        //           move || {
-        //               document
-        //                   .remove_event_listener_with_callback(
-        //                       "pointerup",
-        //                       closure.as_ref().unchecked_ref(),
-        //                   )
-        //                   .unwrap();
-        //           }
-        //       });
-    };
-
     html! {
         <div
             id={format!("overlay{}", props.image_path.clone())}
@@ -194,14 +161,28 @@ pub fn drag_thingy(props: &Props) -> Html {
                 top: {}px;
                 left: {}px;
             ", props.start_y.clone(), props.start_x.clone())}>
-                <div
-                    ref={image_ref}
-                    class={classes!("bg-clip-border", "bg-center", "bg-no-repeat", "bg-cover", "resize", "overflow-auto", "w-[120px]", "h-[230px]", "max-w-[800px]", "max-h-[1200px]")}
-                    style={format!("
-                        background-image: url('{}');
-                        aspect-ratio: 11 / 22;
-                    ", props.image_path.clone())}
-                ></div>
+                <div class={classes!("w-content", "h-content")}
+                    style="
+                        position: relative;
+                    "
+                >
+                    <div class={classes!("absolute", "bottom-0", "right-0", "z-[-1]")}>
+                        <div
+                            class={classes!("bg-[url('/resources/cursor-nwse-resize.svg')]", "bg-center", "w-[25px]", "h-[25px]")}>
+                        </div>
+                    </div>
+                    <div
+                        ref={image_ref}
+                        class={classes!("resizer", "bg-clip-border", "bg-center", "bg-no-repeat",
+                                        "bg-cover", "resize", "overflow-auto", "w-[190px]", "h-[230px]",
+                                        "max-w-[800px]", "max-h-[1200px]", "z-5", "top-0", "left-0",
+                                        "hover:cursor-move")}
+                        style={format!("
+                            background-image: url('{}');
+                            aspect-ratio: 11 / 22;
+                        ", props.image_path.clone())}
+                    ></div>
+                </div>
                 <div class={classes!("bg-blue", "hover:cursor-move", "flex", "justify-between", "p-[5px]", "rounded-[2px]")}>
                     <p class={classes!("text-dark-blue", "font-medium")}>{props.title.clone()}</p>
                     <div class={classes!("flex", "gap-x-[2.5px]")}>
@@ -213,6 +194,7 @@ pub fn drag_thingy(props: &Props) -> Html {
                         </div>
                     </div>
                 </div>
+                <button onclick={get_positions}>{"check position"}</button>
         </div>
     }
 }
