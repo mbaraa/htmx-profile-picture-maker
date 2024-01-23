@@ -12,7 +12,8 @@ pub struct Props {
     pub start_y: u32,
     pub title: String,
     pub image_path: String,
-    pub aspect_ratio: f32,
+    pub width: u32,
+    pub aspect_ratio: f64,
 }
 
 #[function_component(DragThingy)]
@@ -26,21 +27,31 @@ pub fn drag_thingy(props: &Props) -> Html {
     let is_move = use_state(|| false);
     let overlay_ref = use_node_ref();
     let overlay_id = use_state(|| format!("overlay{}", props.image_path.clone()));
+    let aspect_ratio = use_state(|| props.aspect_ratio.clone());
 
     let image_ref = use_node_ref();
 
     // TODO: implement this to reduce code.
     let _remove_event_listener_with_callback = {};
 
-    let get_positions = {
+    let fix_ratio = {
         let image_ref = image_ref.clone();
         Callback::from(move |_| {
             let div = image_ref
                 .clone()
                 .cast::<HtmlDivElement>()
                 .expect("something went wrong");
-            console::log!(div.get_bounding_client_rect().x());
-            console::log!(div.get_bounding_client_rect().y());
+            div.style()
+                .set_property(
+                    "height",
+                    format!(
+                        "{}px",
+                        div.get_bounding_client_rect().width() * (1.0 / *aspect_ratio)
+                    )
+                    .to_owned()
+                    .as_str(),
+                )
+                .unwrap();
         })
     };
 
@@ -173,28 +184,26 @@ pub fn drag_thingy(props: &Props) -> Html {
                     </div>
                     <div
                         ref={image_ref}
-                        class={classes!("resizer", "bg-clip-border", "bg-center", "bg-no-repeat",
-                                        "bg-cover", "resize", "overflow-auto", "w-[190px]", "h-[230px]",
-                                        "max-w-[800px]", "max-h-[1200px]", "z-5", "top-0", "left-0",
-                                        "hover:cursor-move")}
+                        class={classes!("bg-clip-border", "bg-center", "bg-no-repeat", "hover:cursor-move",
+                                        "bg-cover", "resize", "overflow-auto", "",//w-[190px]", "h-[230px]
+                                        "max-w-[800px]", "max-h-[1200px]", "top-0", "left-0")}
                         style={format!("
+                            width: {}px;
                             background-image: url('{}');
-                            aspect-ratio: 11 / 22;
-                        ", props.image_path.clone())}
+                            aspect-ratio: {};
+                        ", props.width.clone(), props.image_path.clone(), props.aspect_ratio.clone())}
                     ></div>
                 </div>
-                <div class={classes!("bg-blue", "hover:cursor-move", "flex", "justify-between", "p-[5px]", "rounded-[2px]")}>
-                    <p class={classes!("text-dark-blue", "font-medium")}>{props.title.clone()}</p>
-                    <div class={classes!("flex", "gap-x-[2.5px]")}>
-                        <div
-                            class={classes!("bg-[url('/resources/cursor-move.svg')]", "bg-center", "w-[25px]", "h-[25px]")}>
-                        </div>
-                        <div
-                            class={classes!("bg-[url('/resources/cursor-nwse-resize.svg')]", "bg-center", "w-[25px]", "h-[25px]", "hover:cursor-nwse-resize")}>
-                        </div>
-                    </div>
+                <div class={classes!("border-t", "border-white", "hover:cursor-move", "flex", "justify-between",
+                                     "items-center", "p-[5px]", "mt-[5px]")}>
+                    <p class={classes!("text-blue", "font-medium")}>{props.title.clone()}</p>
+                    <button
+                        class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
+                                        "hover:text-blue", "rounded-[5px]")}
+                        onclick={fix_ratio}>
+                            {"Fix ratio"}
+                    </button>
                 </div>
-                <button onclick={get_positions}>{"check position"}</button>
         </div>
     }
 }
