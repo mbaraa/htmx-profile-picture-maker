@@ -1,5 +1,5 @@
 mod app;
-mod drag_thingy;
+mod editor;
 
 use app::App;
 

@@ -16,8 +16,8 @@ pub struct Props {
     pub aspect_ratio: f64,
 }
 
-#[function_component(DragThingy)]
-pub fn drag_thingy(props: &Props) -> Html {
+#[function_component(MoveableImage)]
+pub fn moveable_image(props: &Props) -> Html {
     let document = window()
         .expect_throw("window is undefined")
         .document()
@@ -189,9 +189,12 @@ pub fn drag_thingy(props: &Props) -> Html {
                                         "max-w-[800px]", "max-h-[1200px]", "top-0", "left-0")}
                         style={format!("
                             width: {}px;
+                            min-width: {}px;
                             background-image: url('{}');
                             aspect-ratio: {};
-                        ", props.width.clone(), props.image_path.clone(), props.aspect_ratio.clone())}
+                        ", props.width.clone(), props.width.clone(),
+                           props.image_path.clone(), props.aspect_ratio.clone())
+                        }
                     ></div>
                 </div>
                 <div class={classes!("border-t", "border-white", "hover:cursor-move", "flex", "justify-between",
@@ -200,7 +203,8 @@ pub fn drag_thingy(props: &Props) -> Html {
                     <button
                         class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
                                         "hover:text-blue", "rounded-[5px]")}
-                        onclick={fix_ratio}>
+                        onclick={fix_ratio}
+                        title="Adjust the image's ratio after resizing">
                             {"Fix ratio"}
                     </button>
                 </div>
