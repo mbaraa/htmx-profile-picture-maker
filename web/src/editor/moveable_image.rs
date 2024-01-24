@@ -1,10 +1,18 @@
-use gloo::console;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::{closure::Closure, JsCast, UnwrapThrowExt};
 use web_sys::{window, EventTarget, HtmlDivElement, MouseEvent};
 use yew::{
     classes, function_component, html, use_effect, use_node_ref, use_state, Callback, Html,
     Properties,
 };
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Rect {
+    pub x: f64,
+    pub y: f64,
+    pub width: f64,
+    pub height: f64,
+}
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -14,6 +22,8 @@ pub struct Props {
     pub image_path: String,
     pub width: u32,
     pub aspect_ratio: f64,
+
+    pub get_rect: Callback<Rect>,
 }
 
 #[function_component(MoveableImage)]
@@ -28,6 +38,7 @@ pub fn moveable_image(props: &Props) -> Html {
     let overlay_ref = use_node_ref();
     let overlay_id = use_state(|| format!("overlay{}", props.image_path.clone()));
     let aspect_ratio = use_state(|| props.aspect_ratio.clone());
+    let get_position = use_state(|| props.get_rect.clone());
 
     let image_ref = use_node_ref();
 
@@ -96,17 +107,36 @@ pub fn moveable_image(props: &Props) -> Html {
 
     {
         let is_move = is_move.clone();
-        let document = document.clone();
+        let image_ref = image_ref.clone();
+        let div_ref = overlay_ref.clone();
         use_effect(move || {
             let closure = Closure::<dyn FnMut(_)>::new(move |_e: MouseEvent| {
                 is_move.set(false);
+                let dom_rect = image_ref
+                    .clone()
+                    .cast::<HtmlDivElement>()
+                    .expect("something went wrong")
+                    .get_bounding_client_rect();
+                get_position.emit(Rect {
+                    x: dom_rect.x(),
+                    y: dom_rect.y(),
+                    width: dom_rect.width(),
+                    height: dom_rect.height(),
+                });
             });
-            document
+
+            div_ref
+                .clone()
+                .cast::<HtmlDivElement>()
+                .expect("div_ref not attached to div element")
                 .add_event_listener_with_callback("pointerup", closure.as_ref().unchecked_ref())
-                .expect("AAAAAAAAAAAAAAAAAAA");
+                .unwrap();
 
             move || {
-                document
+                div_ref
+                    .clone()
+                    .cast::<HtmlDivElement>()
+                    .expect("div_ref not attached to div element")
                     .remove_event_listener_with_callback(
                         "pointerup",
                         closure.as_ref().unchecked_ref(),
