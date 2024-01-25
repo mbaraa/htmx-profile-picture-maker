@@ -1,4 +1,4 @@
-use crate::editor::moveable_image::MoveableImage;
+use crate::editor::{moveable_image::MoveableImage, picture_picker::PicturePicker};
 use gloo::console;
 use serde_json;
 use yew::{classes, function_component, html, Callback, Html};
@@ -19,7 +19,7 @@ pub fn app() -> Html {
         <main style="min-height: 100dvh" class={classes!("bg-gray")}>
             <MoveableImage
                 start_x={0}
-                start_y={0}
+                start_y={400}
                 image_path="/resources/laser-right.svg"
                 title="Right Laser"
                 aspect_ratio={0.6}
@@ -28,14 +28,14 @@ pub fn app() -> Html {
             />
             <MoveableImage
                 start_x={200}
-                start_y={0}
+                start_y={400}
                 image_path="/resources/laser-left.svg"
                 title="Left Laser"
                 aspect_ratio={0.7}
                 width={200}
                 get_rect={get_left_laser_rect}
             />
-            {"AAAAAAAAAAAAAAAAAAAAAAAA HELP!"}
+            <PicturePicker />
         </main>
     }
 }
