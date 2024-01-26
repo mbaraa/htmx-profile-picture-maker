@@ -123,6 +123,7 @@ pub fn moveable_image(props: &Props) -> Html {
                     width: dom_rect.width(),
                     height: dom_rect.height(),
                 });
+                fix_ratio.emit(());
             });
 
             div_ref
@@ -230,13 +231,6 @@ pub fn moveable_image(props: &Props) -> Html {
                 <div class={classes!("border-t", "border-white", "hover:cursor-move", "flex", "justify-between",
                                      "items-center", "p-[5px]", "mt-[5px]")}>
                     <p class={classes!("text-blue", "font-medium")}>{props.title.clone()}</p>
-                    <button
-                        class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
-                                        "hover:text-blue", "rounded-[5px]")}
-                        onclick={fix_ratio}
-                        title="Adjust the image's ratio after resizing">
-                            {"Fix ratio"}
-                    </button>
                 </div>
         </div>
     }

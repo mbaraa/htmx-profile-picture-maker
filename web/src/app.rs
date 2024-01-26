@@ -1,7 +1,9 @@
 use crate::editor::{moveable_image::MoveableImage, picture_picker::PicturePicker};
 use gloo::console;
 use serde_json;
-use yew::{classes, function_component, html, Callback, Html};
+use wasm_bindgen::JsValue;
+use web_sys::File;
+use yew::{classes, function_component, html, use_effect_with, use_state, Callback, Html};
 
 #[function_component(App)]
 pub fn app() -> Html {
@@ -14,6 +16,24 @@ pub fn app() -> Html {
         console::log!("left");
         console::log!(serde_json::to_string(&rect).unwrap());
     });
+    let image_file = use_state(|| {
+        File::new_with_u8_array_sequence(&JsValue::from(js_sys::Array::new()), "").unwrap()
+    });
+
+    let set_image_file = {
+        let image_file = image_file.clone();
+        Callback::from(move |image_file_ref| {
+            image_file.set(image_file_ref);
+        })
+    };
+
+    {
+        let image_file = image_file.clone();
+        let image_file_c = image_file.clone();
+        use_effect_with(image_file, move |_| {
+            console::log!((*image_file_c).name());
+        });
+    };
 
     html! {
         <main style="min-height: 100dvh" class={classes!("bg-gray")}>
@@ -35,7 +55,11 @@ pub fn app() -> Html {
                 width={200}
                 get_rect={get_left_laser_rect}
             />
-            <PicturePicker />
+            <PicturePicker
+                image_file={(*image_file).clone()}
+                set_image_file={set_image_file}
+                max_file_size={5120}
+            />
         </main>
     }
 }
