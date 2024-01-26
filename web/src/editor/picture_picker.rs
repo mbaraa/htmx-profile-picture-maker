@@ -97,7 +97,7 @@ pub fn picture_picker(props: &Props) -> Html {
     html! {
         <div class={classes!("w-fit", "grid", "grid-cols-1")}>
             <img
-              class={classes!("rounded-[16px]", "min-w-[365px]", "min-h-[365px]", "max-w-[600px]", "max-h-[600px]", "p-[15px]", "bg-gray-100")}
+              class={classes!("rounded-[16px]", "min-w-[365px]", "min-h-[35px]", "max-w-[600px]", "max-h-[600px]", "p-[15px]", "bg-gray-100")}
               id="image-to-upload"
               src={(*image_url).clone()}
               alt="Picked image"
