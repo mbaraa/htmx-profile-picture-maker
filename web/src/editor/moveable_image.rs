@@ -198,6 +198,7 @@ pub fn moveable_image(props: &Props) -> Html {
         <div
             id={format!("overlay{}", props.image_path.clone())}
             ref={overlay_ref}
+            title="Move this laser to your profile picture"
             style={format!("
                 position: absolute;
                 top: {}px;
@@ -208,7 +209,8 @@ pub fn moveable_image(props: &Props) -> Html {
                         position: relative;
                     "
                 >
-                    <div class={classes!("absolute", "bottom-0", "right-0", "z-[-1]")}>
+                    <div
+                        class={classes!("absolute", "bottom-0", "right-0", "z-[-1]")}>
                         <div
                             class={classes!("bg-[url('/resources/cursor-nwse-resize.svg')]", "bg-center", "w-[25px]", "h-[25px]")}>
                         </div>
@@ -216,7 +218,7 @@ pub fn moveable_image(props: &Props) -> Html {
                     <div
                         ref={image_ref}
                         class={classes!("bg-clip-border", "bg-center", "bg-no-repeat", "hover:cursor-move",
-                                        "bg-cover", "resize", "overflow-auto", "",//w-[190px]", "h-[230px]
+                                        "bg-cover", "resize", "overflow-auto",//w-[190px]", "h-[230px]
                                         "max-w-[800px]", "max-h-[1200px]", "top-0", "left-0")}
                         style={format!("
                             width: {}px;
@@ -228,8 +230,8 @@ pub fn moveable_image(props: &Props) -> Html {
                         }
                     ></div>
                 </div>
-                <div class={classes!("border-t", "border-white", "hover:cursor-move", "flex", "justify-between",
-                                     "items-center", "p-[5px]", "mt-[5px]")}>
+                <div class={classes!("hover:cursor-move", "flex", "justify-center", "items-center",
+                                     "p-[5px]", "mt-[5px]", "w-full", "bg-white")}>
                     <p class={classes!("text-blue", "font-medium")}>{props.title.clone()}</p>
                 </div>
         </div>

@@ -95,12 +95,13 @@ pub fn picture_picker(props: &Props) -> Html {
     };
 
     html! {
-        <div class={classes!("w-full", "grid", "grid-cols-1", "items-center", "place-items-center", "content-center")}>
+        <div class={classes!("w-fit", "grid", "grid-cols-1")}>
             <img
-              class={classes!("rounded-[16px]", "min-w-[350px]", "min-h-[350px]", "max-w-[600px]", "max-h-[600px]", "p-[15px]", "bg-gray-100")}
+              class={classes!("rounded-[16px]", "min-w-[365px]", "min-h-[365px]", "max-w-[600px]", "max-h-[600px]", "p-[15px]", "bg-gray-100")}
               id="image-to-upload"
               src={(*image_url).clone()}
               alt="Picked image"
+              title="Select a profile picture to htmx it up!"
             />
             <br />
             <input
@@ -112,20 +113,21 @@ pub fn picture_picker(props: &Props) -> Html {
               onchange={pick_file}
             />
 
-            <label
-                for="raised-button-file"
-                class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
-                                "hover:text-blue", "rounded-[5px]", "cursor-pointer", "mt-[10px]")}
-            >
-                {"Select file"}
-            </label>
-
             if (*error_msg).len() > 0 {
-              <label class={classes!("text-red-500", "text-[20px]")}>
+              <label class={classes!("text-red-500", "text-[15px]")}>
                 <br />
                 {(*error_msg).clone()}
               </label>
             }
+
+            <label
+                for="raised-button-file"
+                class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
+                                "hover:text-blue", "rounded-[5px]", "cursor-pointer", "my-[10px]")}
+            >
+                {"Select file"}
+            </label>
+
         </div>
     }
 }

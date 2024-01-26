@@ -35,11 +35,18 @@ pub fn app() -> Html {
         });
     };
 
+    let do_something = {
+        let image_file = image_file.clone();
+        Callback::from(move |_| {
+            console::log!((*image_file).name());
+        })
+    };
+
     html! {
         <main style="min-height: 100dvh" class={classes!("bg-gray")}>
             <MoveableImage
                 start_x={0}
-                start_y={400}
+                start_y={460}
                 image_path="/resources/laser-right.svg"
                 title="Right Laser"
                 aspect_ratio={0.6}
@@ -48,7 +55,7 @@ pub fn app() -> Html {
             />
             <MoveableImage
                 start_x={200}
-                start_y={400}
+                start_y={460}
                 image_path="/resources/laser-left.svg"
                 title="Left Laser"
                 aspect_ratio={0.7}
@@ -58,8 +65,13 @@ pub fn app() -> Html {
             <PicturePicker
                 image_file={(*image_file).clone()}
                 set_image_file={set_image_file}
-                max_file_size={5120}
+                max_file_size={7168}
             />
+            <button
+                class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
+                                "hover:text-blue", "rounded-[5px]")}
+                onclick={do_something}
+            >{"Something"}</button>
         </main>
     }
 }
