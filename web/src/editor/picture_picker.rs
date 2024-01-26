@@ -15,7 +15,7 @@ pub struct Props {
 
 #[function_component(PicturePicker)]
 pub fn picture_picker(props: &Props) -> Html {
-    let image_url = use_state(|| props.image_content.clone());
+    let image_content = use_state(|| props.image_content.clone());
     let set_image_content = use_state(|| props.set_image_content.clone());
 
     let image_file = use_state(|| {
@@ -38,7 +38,7 @@ pub fn picture_picker(props: &Props) -> Html {
     };
 
     {
-        let image_url = image_url.clone();
+        let image_content = image_content.clone();
         let image_file_c = image_file.clone();
         let error_msg = error_msg.clone();
         let max_file_size = max_file_size.clone();
@@ -75,14 +75,14 @@ pub fn picture_picker(props: &Props) -> Html {
             let fr = FileReader::new().unwrap();
             let fr_c = fr.clone();
             // clone the image url, to move it to another function, bla bla bla.
-            let image_url = image_url.clone();
+            let image_content = image_content.clone();
 
             // create onLoadEnd callback, where this will read the file and just slap its
             // content to the img element on the DOM.
             let onloadend_cb = Closure::wrap(Box::new(move |_e: web_sys::ProgressEvent| {
                 // sine I'm only calling `read_as_data_url`, it will read the image as a base64
                 // string, and well, here I am.
-                image_url.set(fr_c.result().unwrap().to_owned().as_string().unwrap());
+                image_content.set(fr_c.result().unwrap().to_owned().as_string().unwrap());
                 set_image_content.emit(fr_c.result().unwrap().to_owned().as_string().unwrap());
             }) as Box<dyn Fn(web_sys::ProgressEvent)>);
 
@@ -101,7 +101,7 @@ pub fn picture_picker(props: &Props) -> Html {
             <img
               class={classes!("rounded-[16px]", "min-w-[365px]", "min-h-[35px]", "max-w-[600px]", "max-h-[600px]", "p-[15px]", "bg-gray-100")}
               id="image-to-upload"
-              src={(*image_url).clone()}
+              src={(*image_content).clone()}
               alt="Picked image"
               title="Select a profile picture to htmx it up!"
             />
