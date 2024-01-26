@@ -23,7 +23,7 @@ pub struct Props {
     pub width: u32,
     pub aspect_ratio: f64,
 
-    pub get_rect: Callback<Rect>,
+    pub set_rect: Callback<Rect>,
 }
 
 #[function_component(MoveableImage)]
@@ -38,7 +38,7 @@ pub fn moveable_image(props: &Props) -> Html {
     let overlay_ref = use_node_ref();
     let overlay_id = use_state(|| format!("overlay{}", props.image_path.clone()));
     let aspect_ratio = use_state(|| props.aspect_ratio.clone());
-    let get_position = use_state(|| props.get_rect.clone());
+    let set_position = use_state(|| props.set_rect.clone());
 
     let image_ref = use_node_ref();
 
@@ -117,7 +117,7 @@ pub fn moveable_image(props: &Props) -> Html {
                     .cast::<HtmlDivElement>()
                     .expect("something went wrong")
                     .get_bounding_client_rect();
-                get_position.emit(Rect {
+                set_position.emit(Rect {
                     x: dom_rect.x(),
                     y: dom_rect.y(),
                     width: dom_rect.width(),

@@ -1,5 +1,5 @@
 use gloo::console;
-use wasm_bindgen::{closure::Closure, JsCast};
+use wasm_bindgen::{closure::Closure, JsCast, JsValue};
 use web_sys::{Event, EventTarget, File, FileReader, HtmlInputElement};
 use yew::{
     classes, function_component, html, use_effect_with, use_state, Callback, Html, Properties,
@@ -9,22 +9,23 @@ use yew::{
 pub struct Props {
     /// file size in kilobytes
     pub max_file_size: u64,
-    pub image_file: File,
-    pub set_image_file: Callback<File>,
+    pub image_content: String,
+    pub set_image_content: Callback<String>,
 }
 
 #[function_component(PicturePicker)]
 pub fn picture_picker(props: &Props) -> Html {
-    let image_file = use_state(|| props.image_file.clone());
-    let set_image_file = use_state(|| props.set_image_file.clone());
+    let image_url = use_state(|| props.image_content.clone());
+    let set_image_content = use_state(|| props.set_image_content.clone());
 
+    let image_file = use_state(|| {
+        File::new_with_u8_array_sequence(&JsValue::from(js_sys::Array::new()), "").unwrap()
+    });
     let max_file_size = use_state(|| props.max_file_size.clone() as f64);
-    let image_url = use_state(|| String::from("resources/image-upload.png"));
     let error_msg = use_state(String::new);
 
     let pick_file = {
         let image_file = image_file.clone();
-        let set_image_file = set_image_file.clone();
 
         Callback::from(move |e: Event| {
             let target: Option<EventTarget> = e.target();
@@ -32,7 +33,6 @@ pub fn picture_picker(props: &Props) -> Html {
             let file_target = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
             if let Some(file_target) = file_target {
                 image_file.set(file_target.files().unwrap().item(0).unwrap());
-                set_image_file.emit(file_target.files().unwrap().item(0).unwrap());
             }
         })
     };
@@ -42,6 +42,7 @@ pub fn picture_picker(props: &Props) -> Html {
         let image_file_c = image_file.clone();
         let error_msg = error_msg.clone();
         let max_file_size = max_file_size.clone();
+        let set_image_content = set_image_content.clone();
 
         use_effect_with(image_file, move |_| {
             // initial state of the image file.
@@ -82,6 +83,7 @@ pub fn picture_picker(props: &Props) -> Html {
                 // sine I'm only calling `read_as_data_url`, it will read the image as a base64
                 // string, and well, here I am.
                 image_url.set(fr_c.result().unwrap().to_owned().as_string().unwrap());
+                set_image_content.emit(fr_c.result().unwrap().to_owned().as_string().unwrap());
             }) as Box<dyn Fn(web_sys::ProgressEvent)>);
 
             fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
