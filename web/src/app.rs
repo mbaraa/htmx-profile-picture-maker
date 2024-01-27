@@ -85,7 +85,7 @@ pub fn app() -> Html {
                     .body(
                         serde_json::to_string(&RequestBody {
                             pfp_b64: ((*image_content).clone()
-                                [(*image_content).clone().find("base64,").unwrap() + 6..])
+                                [(*image_content).clone().find("base64,").unwrap() + 7..])
                                 .to_string(),
                             right_rect: *right_rect,
                             left_rect: *left_rect,
