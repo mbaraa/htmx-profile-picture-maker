@@ -1,12 +1,10 @@
-FROM rust:1.74-buster as deps
-
-RUN rustup target add wasm32-unknown-unknown
-RUN cargo install --locked trunk
-
 FROM rust:1.74-buster as builder
+
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
     apt-get install -y nodejs
 RUN apt install make
+RUN rustup target add wasm32-unknown-unknown
+RUN cargo install --locked trunk
 
 WORKDIR /usr/src/app
 COPY . .
