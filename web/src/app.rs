@@ -103,7 +103,7 @@ pub fn app() -> Html {
                             format!("data:image/png;base64,{}", r.htmx_pfp).as_str(),
                         )
                         .unwrap();
-                        a.set_attribute("download", "Download.png").unwrap();
+                        a.set_attribute("download", "HTMXed pfp.png").unwrap();
                         let aaa = JsCast::dyn_into::<HtmlElement>(a).unwrap();
                         aaa.click();
                     }
