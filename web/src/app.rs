@@ -98,11 +98,14 @@ pub fn app() -> Html {
                 match resp_body {
                     Ok(r) => {
                         let a = document().create_element("a").unwrap();
-                        a.set_attribute("href", r.htmx_pfp.as_str()).unwrap();
+                        a.set_attribute(
+                            "href",
+                            format!("data:image/png;base64,{}", r.htmx_pfp).as_str(),
+                        )
+                        .unwrap();
                         a.set_attribute("download", "Download.png").unwrap();
                         let aaa = JsCast::dyn_into::<HtmlElement>(a).unwrap();
                         aaa.click();
-                        console::log!(&JsValue::from(r.htmx_pfp));
                     }
                     Err(err) => {
                         error_msg.set(err.to_string());
