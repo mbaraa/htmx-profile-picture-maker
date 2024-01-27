@@ -2,14 +2,29 @@ use crate::editor::{
     moveable_image::{MoveableImage, Rect},
     picture_picker::PicturePicker,
 };
-use gloo::console;
+use gloo::{console, utils::document};
+use gloo_net::http;
+use serde::{Deserialize, Serialize};
 use serde_json;
-use wasm_bindgen::JsValue;
-use web_sys::File;
-use yew::{classes, function_component, html, use_effect_with, use_state, Callback, Html};
+use wasm_bindgen::{JsCast, JsValue};
+use web_sys::HtmlElement;
+use yew::{classes, function_component, html, use_state, Callback, Html};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct RequestBody {
+    pub pfp_b64: String,
+    pub right_rect: Rect,
+    pub left_rect: Rect,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ResponseBody {
+    pub htmx_pfp: String,
+}
 
 #[function_component(App)]
 pub fn app() -> Html {
+    let error_msg = use_state(String::new);
     let left_rect = use_state(|| Rect {
         x: 0.,
         y: 0.,
@@ -45,22 +60,58 @@ pub fn app() -> Html {
         })
     };
 
-    {
-        let image_content = image_content.clone();
-        let image_content_c = image_content.clone();
-        use_effect_with(image_content, move |_| {
-            console::log!((*image_content_c).clone());
-        });
-    };
-
     let do_something = {
         let image_content = image_content.clone();
         let right_rect = right_rect.clone();
         let left_rect = left_rect.clone();
+        let error_msg = error_msg.clone();
+
         Callback::from(move |_| {
-            console::log!((*image_content).clone());
-            console::log!(serde_json::to_string(&(*right_rect)).unwrap());
-            console::log!(serde_json::to_string(&(*left_rect)).unwrap());
+            let image_content = image_content.clone();
+            let right_rect = right_rect.clone();
+            let left_rect = left_rect.clone();
+
+            if (*image_content).eq("resources/image-upload.png")
+                || !(*image_content).contains("base64,")
+            {
+                error_msg.set("sEleCt aN iMaGe PLEASE!".to_string());
+                return;
+            }
+
+            let error_msg = error_msg.clone();
+            wasm_bindgen_futures::spawn_local(async move {
+                let req = http::Request::post("http://localhost:8080/generate-htmx-pfp")
+                    .header("Content-Type", "application/json")
+                    .body(
+                        serde_json::to_string(&RequestBody {
+                            pfp_b64: ((*image_content).clone()
+                                [(*image_content).clone().find("base64,").unwrap() + 6..])
+                                .to_string(),
+                            right_rect: *right_rect,
+                            left_rect: *left_rect,
+                        })
+                        .unwrap(),
+                    );
+                let resp = req.unwrap().send().await.unwrap();
+                let resp_body: Result<ResponseBody, gloo_net::Error> = resp.json().await;
+
+                match resp_body {
+                    Ok(r) => {
+                        let a = document().create_element("a").unwrap();
+                        a.set_attribute("href", r.htmx_pfp.as_str()).unwrap();
+                        a.set_attribute("download", "Download.png").unwrap();
+                        let aaa = JsCast::dyn_into::<HtmlElement>(a).unwrap();
+                        aaa.click();
+                        console::log!(&JsValue::from(r.htmx_pfp));
+                    }
+                    Err(err) => {
+                        error_msg.set(err.to_string());
+                    }
+                }
+            });
+            //console::log!((*image_content).clone());
+            //console::log!(serde_json::to_string(&(*right_rect)).unwrap());
+            //console::log!(serde_json::to_string(&(*left_rect)).unwrap());
         })
     };
 
@@ -89,6 +140,14 @@ pub fn app() -> Html {
                 set_image_content={set_image_content}
                 max_file_size={7168}
             />
+
+            if (*error_msg).len() > 0 {
+              <label class={classes!("text-red-500", "text-[15px]")}>
+                <br />
+                {(*error_msg).clone()}
+              </label>
+            }
+
             <button
                 class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
                                 "hover:text-blue", "rounded-[5px]")}

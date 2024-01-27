@@ -6,7 +6,7 @@ use yew::{
     Properties,
 };
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub struct Rect {
     pub x: f64,
     pub y: f64,
