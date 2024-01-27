@@ -56,9 +56,9 @@ pub fn picture_picker(props: &Props) -> Html {
                 )));
                 return;
             }
-            if !(*image_file_c).type_().contains("image") {
+            if !(*image_file_c).type_().contains("image/png") {
                 error_msg.set(String::from(
-                    "I'm guessing things got personal, 'cuz this doesn't look like a file to me...",
+                    "I'm guessing things got personal, 'cuz this doesn't look like a png to me...",
                 ));
                 return;
             }
@@ -107,7 +107,7 @@ pub fn picture_picker(props: &Props) -> Html {
             />
             <br />
             <input
-              accept="image/*"
+              accept="image/png"
               class={classes!("hidden")}
               id="raised-button-file"
               type="file"
