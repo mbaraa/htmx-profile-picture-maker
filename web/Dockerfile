@@ -1,16 +1,16 @@
-FROM rust:1.74-buster as builder
+FROM rust:1.74-buster as deps
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
     apt-get install -y nodejs
-RUN apt install make
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install --locked trunk
+
+FROM rust:1.74-buster as builder
+RUN apt install make
 
 WORKDIR /usr/src/app
 COPY . .
 
-# RUN cargo install --path .
-# RUN trunk build
 RUN make build
 
 FROM alpine:latest
