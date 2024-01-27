@@ -80,7 +80,7 @@ pub fn app() -> Html {
 
             let error_msg = error_msg.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let req = http::Request::post("http://localhost:8080/generate-htmx-pfp")
+                let req = http::Request::post("/api/generate-htmx-pfp")
                     .header("Content-Type", "application/json")
                     .body(
                         serde_json::to_string(&RequestBody {
