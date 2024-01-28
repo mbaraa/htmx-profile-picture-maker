@@ -125,7 +125,7 @@ pub fn app() -> Html {
                 start_y={460}
                 image_path="/resources/laser-right.svg"
                 title="Right Laser"
-                aspect_ratio={0.6}
+                aspect_ratio={0.542125}
                 width={171}
                 set_rect={set_right_laser_rect}
             />
@@ -134,7 +134,7 @@ pub fn app() -> Html {
                 start_y={460}
                 image_path="/resources/laser-left.svg"
                 title="Left Laser"
-                aspect_ratio={0.7}
+                aspect_ratio={0.61144}
                 width={200}
                 set_rect={set_left_laser_rect}
             />
