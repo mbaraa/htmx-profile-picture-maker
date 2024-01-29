@@ -1,10 +1,11 @@
 use crate::{
-    header::Header,
-    footer::Footer,
     editor::{
-    moveable_image::{MoveableImage, Rect},
-    picture_picker::{PicturePicker, Point},
-}};
+        moveable_image::{MoveableImage, Rect},
+        picture_picker::{PicturePicker, Point},
+    },
+    footer::Footer,
+    header::Header,
+};
 use gloo::{console, utils::document};
 use gloo_net::http;
 use serde::{Deserialize, Serialize};
@@ -40,7 +41,7 @@ pub fn app() -> Html {
         width: 0.,
         height: 0.,
     });
-    let image_position = use_state(|| Point {x: 0, y: 0});
+    let image_position = use_state(|| Point { x: 0, y: 0 });
 
     let set_right_laser_rect = {
         let right_rect = right_rect.clone();
@@ -55,7 +56,7 @@ pub fn app() -> Html {
             left_rect.set(rect);
         })
     };
-    let image_content = use_state(|| String::from("resources/image-upload.png"));
+    let image_content = use_state(|| String::from("resources/non-htmx-pfp-placeholder.svg"));
 
     let set_image_content = {
         let image_content = image_content.clone();
@@ -90,7 +91,7 @@ pub fn app() -> Html {
             }
 
             let error_msg = error_msg.clone();
-        let image_position = image_position.clone();
+            let image_position = image_position.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let req = http::Request::post("/api/generate-htmx-pfp")
                     .header("Content-Type", "application/json")
@@ -100,16 +101,16 @@ pub fn app() -> Html {
                                 [(*image_content).clone().find("base64,").unwrap() + 7..])
                                 .to_string(),
                             right_rect: Rect {
-                                           x: (*right_rect).x - (*image_position).x as f64,
-                                           y: (*right_rect).y - (*image_position).y as f64,
-                                           height: (*right_rect).height,
-                                           width: (*right_rect).width,
+                                x: (*right_rect).x - (*image_position).x as f64,
+                                y: (*right_rect).y - (*image_position).y as f64,
+                                height: (*right_rect).height,
+                                width: (*right_rect).width,
                             },
                             left_rect: Rect {
-                                          x: (*left_rect).x - (*image_position).x as f64,
-                                          y: (*left_rect).y - (*image_position).y as f64,
-                                          height: (*left_rect).height,
-                                          width: (*left_rect).width,
+                                x: (*left_rect).x - (*image_position).x as f64,
+                                y: (*left_rect).y - (*image_position).y as f64,
+                                height: (*left_rect).height,
+                                width: (*left_rect).width,
                             },
                         })
                         .unwrap(),
