@@ -22,12 +22,45 @@
 
     <!-- GitHub star repo button -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <style>
+      .loader {
+        height: 100%;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-width: 6px;
+        border-style: solid;
+        border-color: #dedede;
+        border-top-color: transparent;
+        border-top-width: 2px;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 5px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
+
   <body
     style="
       min-height: 100dvh;
       background-color: #191b1c;
       font-family: &quot;Ubuntu&quot;;
     "
-  ></body>
+  >
+    <h1 style="color: white; font-size: 36px">
+      Loading web assembly...
+      <div
+        class="loader"
+        style="display: inline-block; width: 30px; height: 30px"
+      ></div>
+    </h1>
+  </body>
 </html>
