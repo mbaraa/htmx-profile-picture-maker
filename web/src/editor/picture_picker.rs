@@ -59,10 +59,17 @@ pub fn picture_picker(props: &Props) -> Html {
             let file_target = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
             if let Some(file_target) = file_target {
                 image_file.set(file_target.files().unwrap().item(0).unwrap());
-                display_file_name.set(format!(
-                    "Selected: {}",
-                    file_target.files().unwrap().item(0).unwrap().name()
-                ));
+                let file_name_raw = file_target.files().unwrap().item(0).unwrap().name();
+                let file_name = if file_name_raw.len() > 20 {
+                    format!(
+                        "{}...{}",
+                        file_name_raw[0..13].to_string(),
+                        file_name_raw[file_name_raw.len() - 7..].to_string()
+                    )
+                } else {
+                    file_name_raw
+                };
+                display_file_name.set(format!("Selected: {}", file_name));
             }
         })
     };
