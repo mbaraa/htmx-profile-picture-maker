@@ -11,7 +11,7 @@ pub fn header() -> Html {
                  class={classes!("w-[80px]", "h-[80px]")}
                  width="80"
                  height="80"
-                 src="resources/favicon.png"
+                 src="resources/logo.svg"
              />
              <h1 class="hidden md:block ms-[25px] text-[#EDEDED] text-[24px] font-bold">
                {"HTMX Profile Picture Maker"}
