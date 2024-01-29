@@ -1,7 +1,10 @@
-use crate::editor::{
+use crate::{
+    header::Header,
+    footer::Footer,
+    editor::{
     moveable_image::{MoveableImage, Rect},
     picture_picker::{PicturePicker, Point},
-};
+}};
 use gloo::{console, utils::document};
 use gloo_net::http;
 use serde::{Deserialize, Serialize};
@@ -138,48 +141,52 @@ pub fn app() -> Html {
     };
 
     html! {
-        <main style="min-height: 100dvh" class={classes!("bg-gray")}>
-            <div class={classes!("w-full", "grid", "grid-cols-1", "content-center", "justify-items-center")}>
-                <PicturePicker
-                    image_content={(*image_content).clone()}
-                    set_image_content={set_image_content}
-                    set_image_position={set_image_position}
-                    max_file_size={7168}
+        <>
+            <Header />
+            <main style="min-height: 100dvh" class={classes!("bg-gray")}>
+                <div class={classes!("w-full", "grid", "grid-cols-1", "content-center", "justify-items-center")}>
+                    <PicturePicker
+                        image_content={(*image_content).clone()}
+                        set_image_content={set_image_content}
+                        set_image_position={set_image_position}
+                        max_file_size={7168}
+                    />
+
+                    // any possible error message
+                    if (*error_msg).len() > 0 {
+                      <label class={classes!("text-red-500", "text-[15px]")}>
+                        <br />
+                        {(*error_msg).clone()}
+                      </label>
+                    }
+
+                    <button
+                        class={classes!("p-[4px]", "px-[8px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
+                                        "hover:text-blue", "rounded-[5px]", "w-[365px]")}
+                        onclick={do_something}
+                    >{"Something"}</button>
+                </div>
+
+                <MoveableImage
+                    start_x={0}
+                    start_y={100}
+                    image_path="/resources/laser-right.svg"
+                    title="Right Laser"
+                    aspect_ratio={0.542125}
+                    width={171}
+                    set_rect={set_right_laser_rect}
                 />
-
-                // any possible error message
-                if (*error_msg).len() > 0 {
-                  <label class={classes!("text-red-500", "text-[15px]")}>
-                    <br />
-                    {(*error_msg).clone()}
-                  </label>
-                }
-
-                <button
-                    class={classes!("p-[4px]", "px-[8px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
-                                    "hover:text-blue", "rounded-[5px]", "w-[365px]")}
-                    onclick={do_something}
-                >{"Something"}</button>
-            </div>
-
-            <MoveableImage
-                start_x={0}
-                start_y={100}
-                image_path="/resources/laser-right.svg"
-                title="Right Laser"
-                aspect_ratio={0.542125}
-                width={171}
-                set_rect={set_right_laser_rect}
-            />
-            <MoveableImage
-                start_x={0}
-                start_y={460}
-                image_path="/resources/laser-left.svg"
-                title="Left Laser"
-                aspect_ratio={0.61144}
-                width={200}
-                set_rect={set_left_laser_rect}
-            />
-        </main>
+                <MoveableImage
+                    start_x={0}
+                    start_y={460}
+                    image_path="/resources/laser-left.svg"
+                    title="Left Laser"
+                    aspect_ratio={0.61144}
+                    width={200}
+                    set_rect={set_left_laser_rect}
+                />
+            </main>
+            <Footer />
+        </>
     }
 }
