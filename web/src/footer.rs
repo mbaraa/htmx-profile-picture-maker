@@ -4,7 +4,7 @@ use yew::{classes, function_component, html, Html};
 pub fn footer() -> Html {
     html! {
         <footer class={classes!("h-[300px]", "bg-dark-blue", "text-white")}>
-            <div class={classes!("h-[300px]", "flex", "justify-between", "items-center", "px-[35vw]")}>
+            <div class={classes!("h-[300px]", "flex", "justify-between", "items-center", "px-[30px]", "md:px-[35vw]")}>
                 <div>
                     <h3 class={classes!("text-xl")}>{"haiku"}</h3>
                     <div class={classes!("italic")}>
