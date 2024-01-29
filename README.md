@@ -1,9 +1,4 @@
-# htmx-profile-picture-maker
-
-Turn your profile picture into an htmx styled one.
-
-<div align="center">
-  <a href="https://hppm.mbaraa.com" target="_blank"><img src="https://hppm.mbaraa.com/resources/favicon.png" width="150" /></a>
+<div align="center">  <a href="https://hppm.mbaraa.com" target="_blank"><img src="https://hppm.mbaraa.com/resources/favicon.png" width="150" /></a>
 
   <h1>HTMX Profile Picture Maker</h1>
   <p>
@@ -17,7 +12,11 @@ Turn your profile picture into an htmx styled one.
 
 ## About
 
-**HTMX Profile Picture Maker** Is a tool that helps you turning your profile picture into an htmx lasered one!
+**HTMX Profile Picture Maker** Is a tool that helps you turning your profile picture into an htmx lasered one, because:
+
+1. Why not?
+1. Haven't you done it already?
+1. It's very cool!
 
 _Note: this is a fling project that will die in a while so don't get your hopes up._
 
@@ -27,6 +26,7 @@ _Note: this is a fling project that will die in a while so don't get your hopes 
 - Rust
 - Yew (I'm on a no-JS streak, Yew was my only non-JS frontend option, and it's really growing on me)
 - Cairo Graphics
+- I was very close to adding C into the mix up, but then I remembered that a cairo wrapper for Go exists!
 
 ## Contributing
 
@@ -34,8 +34,8 @@ IDK, it would be really nice of you to contribute, check the poorly written [CON
 
 ### Roadmap
 
-- [ ] Create a somewhat usable frontend
-- [ ] Create the backend that will do the actual work
+- [x] Create a somewhat usable frontend
+- [x] Create the backend that will do the actual work
 - [ ] Refine how the frontend looks, something
 - [ ] Add more roadmap items
 - [ ] Refactor the code (never gonna happen)
