@@ -1,6 +1,6 @@
 use crate::editor::{
     moveable_image::{MoveableImage, Rect},
-    picture_picker::PicturePicker,
+    picture_picker::{PicturePicker, Point},
 };
 use gloo::{console, utils::document};
 use gloo_net::http;
@@ -37,6 +37,7 @@ pub fn app() -> Html {
         width: 0.,
         height: 0.,
     });
+    let image_position = use_state(|| Point {x: 0, y: 0});
 
     let set_right_laser_rect = {
         let right_rect = right_rect.clone();
@@ -59,12 +60,19 @@ pub fn app() -> Html {
             image_content.set(image_content_ref);
         })
     };
+    let set_image_position = {
+        let image_position = image_position.clone();
+        Callback::from(move |point| {
+            image_position.set(point);
+        })
+    };
 
     let do_something = {
         let image_content = image_content.clone();
         let right_rect = right_rect.clone();
         let left_rect = left_rect.clone();
         let error_msg = error_msg.clone();
+        let image_position = image_position.clone();
 
         Callback::from(move |_| {
             let image_content = image_content.clone();
@@ -79,6 +87,7 @@ pub fn app() -> Html {
             }
 
             let error_msg = error_msg.clone();
+        let image_position = image_position.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let req = http::Request::post("/api/generate-htmx-pfp")
                     .header("Content-Type", "application/json")
@@ -87,8 +96,18 @@ pub fn app() -> Html {
                             pfp_b64: ((*image_content).clone()
                                 [(*image_content).clone().find("base64,").unwrap() + 7..])
                                 .to_string(),
-                            right_rect: *right_rect,
-                            left_rect: *left_rect,
+                            right_rect: Rect {
+                                           x: (*right_rect).x - (*image_position).x as f64,
+                                           y: (*right_rect).y - (*image_position).y as f64,
+                                           height: (*right_rect).height,
+                                           width: (*right_rect).width,
+                            },
+                            left_rect: Rect {
+                                          x: (*left_rect).x - (*image_position).x as f64,
+                                          y: (*left_rect).y - (*image_position).y as f64,
+                                          height: (*left_rect).height,
+                                          width: (*left_rect).width,
+                            },
                         })
                         .unwrap(),
                     );
@@ -120,9 +139,32 @@ pub fn app() -> Html {
 
     html! {
         <main style="min-height: 100dvh" class={classes!("bg-gray")}>
+            <div class={classes!("w-full", "grid", "grid-cols-1", "content-center", "justify-items-center")}>
+                <PicturePicker
+                    image_content={(*image_content).clone()}
+                    set_image_content={set_image_content}
+                    set_image_position={set_image_position}
+                    max_file_size={7168}
+                />
+
+                // any possible error message
+                if (*error_msg).len() > 0 {
+                  <label class={classes!("text-red-500", "text-[15px]")}>
+                    <br />
+                    {(*error_msg).clone()}
+                  </label>
+                }
+
+                <button
+                    class={classes!("p-[4px]", "px-[8px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
+                                    "hover:text-blue", "rounded-[5px]", "w-[365px]")}
+                    onclick={do_something}
+                >{"Something"}</button>
+            </div>
+
             <MoveableImage
                 start_x={0}
-                start_y={460}
+                start_y={100}
                 image_path="/resources/laser-right.svg"
                 title="Right Laser"
                 aspect_ratio={0.542125}
@@ -130,7 +172,7 @@ pub fn app() -> Html {
                 set_rect={set_right_laser_rect}
             />
             <MoveableImage
-                start_x={200}
+                start_x={0}
                 start_y={460}
                 image_path="/resources/laser-left.svg"
                 title="Left Laser"
@@ -138,24 +180,6 @@ pub fn app() -> Html {
                 width={200}
                 set_rect={set_left_laser_rect}
             />
-            <PicturePicker
-                image_content={(*image_content).clone()}
-                set_image_content={set_image_content}
-                max_file_size={7168}
-            />
-
-            if (*error_msg).len() > 0 {
-              <label class={classes!("text-red-500", "text-[15px]")}>
-                <br />
-                {(*error_msg).clone()}
-              </label>
-            }
-
-            <button
-                class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
-                                "hover:text-blue", "rounded-[5px]")}
-                onclick={do_something}
-            >{"Something"}</button>
         </main>
     }
 }

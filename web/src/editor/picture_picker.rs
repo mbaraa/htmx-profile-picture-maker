@@ -1,9 +1,17 @@
 use gloo::console;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::{closure::Closure, JsCast, JsValue};
-use web_sys::{Event, EventTarget, File, FileReader, HtmlInputElement};
+use web_sys::{Event, EventTarget, File, FileReader, HtmlDivElement, HtmlInputElement};
 use yew::{
-    classes, function_component, html, use_effect_with, use_state, Callback, Html, Properties,
+    classes, function_component, html, use_effect_with, use_node_ref, use_state, Callback, Html,
+    Properties,
 };
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+pub struct Point {
+    pub x: u32,
+    pub y: u32,
+}
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -11,13 +19,16 @@ pub struct Props {
     pub max_file_size: u64,
     pub image_content: String,
     pub set_image_content: Callback<String>,
+    pub set_image_position: Callback<Point>,
 }
 
 #[function_component(PicturePicker)]
 pub fn picture_picker(props: &Props) -> Html {
     let image_content = use_state(|| props.image_content.clone());
     let set_image_content = use_state(|| props.set_image_content.clone());
+    let set_image_position = use_state(|| props.set_image_position.clone());
 
+    let div_ref = use_node_ref();
     let image_file = use_state(|| {
         File::new_with_u8_array_sequence(&JsValue::from(js_sys::Array::new()), "").unwrap()
     });
@@ -26,8 +37,21 @@ pub fn picture_picker(props: &Props) -> Html {
 
     let pick_file = {
         let image_file = image_file.clone();
+        let div_ref = div_ref.clone();
+        let set_image_position = set_image_position.clone();
 
         Callback::from(move |e: Event| {
+            // get the image's position to set the lasers' offsets
+            let div_rect = div_ref
+                .clone()
+                .cast::<HtmlDivElement>()
+                .expect("div_ref not attached to div element")
+                .get_bounding_client_rect();
+            set_image_position.emit(Point {
+                x: div_rect.x() as u32,
+                y: div_rect.y() as u32,
+            });
+
             let target: Option<EventTarget> = e.target();
             // dyn_into needs JsCast, at least here ig.
             let file_target = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
@@ -97,7 +121,9 @@ pub fn picture_picker(props: &Props) -> Html {
     };
 
     html! {
-        <div class={classes!("w-fit", "grid", "grid-cols-1")}>
+        <div
+            ref={div_ref}
+            class={classes!("w-fit", "grid", "grid-cols-1")}>
             <img
               class={classes!("rounded-[16px]", "w-[365px]", "h-[365px]", "bg-gray-100")}
               id="image-to-upload"
