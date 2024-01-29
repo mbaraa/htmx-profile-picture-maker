@@ -143,7 +143,7 @@ pub fn app() -> Html {
     html! {
         <>
             <Header />
-            <main style="min-height: 100dvh" class={classes!("bg-gray")}>
+            <main style="min-height: 80dvh" class={classes!("bg-gray")}>
                 <div class={classes!("w-full", "grid", "grid-cols-1", "content-center", "justify-items-center")}>
                     <PicturePicker
                         image_content={(*image_content).clone()}
