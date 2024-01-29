@@ -1,4 +1,4 @@
-<div align="center">  <a href="https://hppm.mbaraa.com" target="_blank"><img src="https://hppm.mbaraa.com/resources/favicon.svg" width="150" /></a>
+<div align="center">  <a href="https://htmx.pics" target="_blank"><img src="https://htmx.pics/resources/favicon.svg" width="150" /></a>
 
   <h1>HTMX Profile Picture Maker</h1>
   <p>
