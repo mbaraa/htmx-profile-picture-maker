@@ -1,4 +1,4 @@
-<div align="center">  <a href="https://hppm.mbaraa.com" target="_blank"><img src="https://hppm.mbaraa.com/resources/favicon.png" width="150" /></a>
+<div align="center">  <a href="https://hppm.mbaraa.com" target="_blank"><img src="https://hppm.mbaraa.com/resources/favicon.svg" width="150" /></a>
 
   <h1>HTMX Profile Picture Maker</h1>
   <p>
@@ -36,9 +36,11 @@ IDK, it would be really nice of you to contribute, check the poorly written [CON
 
 - [x] Create a somewhat usable frontend
 - [x] Create the backend that will do the actual work
-- [ ] Refine how the frontend looks, something
-- [ ] Add more roadmap items
-- [ ] Refactor the code (never gonna happen)
+- [x] Refine how the frontend looks, something
+- [ ] Optimize the API's performance (it's horrible)
+- [ ] Convince htmx to make this an official thing
+- [ ] Refactor some namings in the frontend's code, and general components' placements...
+- [ ] More code refactoring (never gonna happen)
 
 ## Run locally
 
