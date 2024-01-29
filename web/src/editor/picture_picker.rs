@@ -29,6 +29,7 @@ pub fn picture_picker(props: &Props) -> Html {
     let set_image_position = use_state(|| props.set_image_position.clone());
 
     let div_ref = use_node_ref();
+    let display_file_name = use_state(|| String::from("Select a file"));
     let image_file = use_state(|| {
         File::new_with_u8_array_sequence(&JsValue::from(js_sys::Array::new()), "").unwrap()
     });
@@ -39,6 +40,7 @@ pub fn picture_picker(props: &Props) -> Html {
         let image_file = image_file.clone();
         let div_ref = div_ref.clone();
         let set_image_position = set_image_position.clone();
+        let display_file_name = display_file_name.clone();
 
         Callback::from(move |e: Event| {
             // get the image's position to set the lasers' offsets
@@ -57,6 +59,10 @@ pub fn picture_picker(props: &Props) -> Html {
             let file_target = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
             if let Some(file_target) = file_target {
                 image_file.set(file_target.files().unwrap().item(0).unwrap());
+                display_file_name.set(format!(
+                    "Selected: {}",
+                    file_target.files().unwrap().item(0).unwrap().name()
+                ));
             }
         })
     };
@@ -153,7 +159,7 @@ pub fn picture_picker(props: &Props) -> Html {
                 class={classes!("p-[3px]", "px-[6px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
                                 "hover:text-blue", "rounded-[5px]", "cursor-pointer", "my-[10px]")}
             >
-                {"Select file"}
+                {(*display_file_name).clone()}
             </label>
 
         </div>
