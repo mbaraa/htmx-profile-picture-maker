@@ -164,7 +164,7 @@ pub fn app() -> Html {
                         class={classes!("p-[4px]", "px-[8px]", "bg-blue", "hover:bg-dark-blue", "text-dark-blue",
                                         "hover:text-blue", "rounded-[5px]", "w-[365px]")}
                         onclick={do_something}
-                    >{"Something"}</button>
+                    >{"Generate HTMX Profile Picture"}</button>
                 </div>
 
                 <MoveableImage
