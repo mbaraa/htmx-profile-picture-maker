@@ -150,7 +150,7 @@ pub fn picture_picker(props: &Props) -> Html {
               class={classes!("hidden")}
               id="raised-button-file"
               type="file"
-              size={5120}
+              size={(*max_file_size).to_string()}
               onchange={pick_file}
             />
 
