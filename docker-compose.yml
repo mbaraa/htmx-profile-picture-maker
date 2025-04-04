@@ -20,7 +20,6 @@ services:
       - front-end-build:/opt
       - htmx-profile-picture-maker-uploads:/app/_uploads
     depends_on:
-      - db
       - website
     ports:
       - "20241:8080"
