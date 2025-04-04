@@ -1,4 +1,4 @@
-FROM rust:1.74-buster as builder
+FROM rust:1.86-bullseye as builder
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
     apt-get install -y nodejs
