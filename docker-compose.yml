@@ -1,18 +1,4 @@
-version: "3.8"
-
 services:
-  db:
-    container_name: "htmx-profile-picture-maker-db"
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: alongtimeagoinagalaxyfarfaraway
-    volumes:
-      - htmx-profile-picture-maker-db-data:/data/db
-    networks:
-      - htmx-profile-picture-maker
-
   website:
     container_name: "htmx-profile-picture-maker-website"
     build:
@@ -48,12 +34,6 @@ networks:
 
 volumes:
   front-end-build: {}
-  htmx-profile-picture-maker-db-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./_database/
   htmx-profile-picture-maker-uploads:
     driver: local
     driver_opts:
